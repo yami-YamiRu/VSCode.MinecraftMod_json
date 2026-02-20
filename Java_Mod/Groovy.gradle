@@ -1,0 +1,18 @@
+dependencies {
+    //FogeのVarをそろえる基礎設定
+    minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
+
+    //Mixinの依存設定
+    annotationprocessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    //Mekの依存
+    //Bild_Repositryの設定は別個
+    implementation fg.deobf("curse.maven:mekanism-268560:4347714")      //Mekの1.19.2のID
+    implementation fg.deobf("curse.maven:mekanism-generators-268566:437717")
+
+}
+
+//mixinの設定
+mixin {
+    add sourceSets.main, "yourmodid.refmap.json"
+}

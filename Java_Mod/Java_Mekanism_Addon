@@ -1,0 +1,31 @@
+package com.yourname.yourmodid.mixin;   //依存ライブラリPassの取得
+
+import mekanism.common.content.boiler.BoilerMultiblockData;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Injection;
+import org.spongepowered.asm.mixin.injection.callback.CallBackInfoReturnable;
+
+@Mixin(BoillerMultiblockData.class)
+public class MixinBoilerMultiblockData {
+    /*getBoilCapacityメソッドに干渉、ハードこーディングされた計算結果を書き換ええて数値を引き上げる
+    　本来の等倍加熱で大量の蒸気を出させる
+    */
+   @Inject(method = "getBoilCapacity", at = @At("RETURN"), cancellable = true, remap = false)
+   private void boostedCapacity(CallBackInfoReturnable<Integer> cir) {
+       int originalCapacity = cir.getReturnValue();
+       
+       /*何倍かここで書き換え可能
+       1=>20倍とするとゲーム上最高レート1920の熱を現実と同様に処理可能(理想)
+       */
+      int boostedCapacity = originalCapacity * 20;
+      
+      cir.setReturnValue(boostedCapacity);
+    }
+
+    /*
+    電熱効率や冷媒の水を計算することは今後可能性があるので同じように"Inject"して数値操作をする
+    Mek.V10以降にバグやブラッシュアップ等が出た場合でも対応した汎用コード設計なので
+    上記コードだけで足りる-"getBoilCapacity"gradle
+    */
+}
